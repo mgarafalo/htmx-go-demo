@@ -40,9 +40,39 @@ func main() {
 		tmpl.ExecuteTemplate(w, "film-list-element", Film{Title: title, Director: director})
 	}
 
+	h3 := func(w http.ResponseWriter, r *http.Request) {
+		tmpl := template.Must(template.ParseFiles("index.html"))
+		title := "The Godfather"
+
+		films := map[string][]Film{
+			"Films": {
+				{Title: "The Godfather", Director: "Francis Ford Coppola"},
+				{Title: "Blade Runner", Director: "Ridley Scott"},
+				{Title: "The Thing", Director: "John Carpenter"},
+			}}
+
+		 s := make(map[string][]Film)
+		emptyFilms := []Film{}
+
+		for _, group := range films {
+			for _, film := range group {
+				if film.Title != title {
+					emptyFilms = append(emptyFilms, film)
+				}
+			}
+		}
+
+		s["Films"] = emptyFilms
+
+		fmt.Println(s["Films"])
+		tmpl.Execute(w, s)
+
+	}
+
 	// define handlers
 	http.HandleFunc("/", h1)
 	http.HandleFunc("/add-film/", h2)
+	http.HandleFunc("/delete-film/", h3)
 
 	log.Fatal(http.ListenAndServe(":8000", nil))
 
