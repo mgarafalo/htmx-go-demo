@@ -26,6 +26,7 @@ func main() {
 				{Title: "The Thing", Director: "John Carpenter"},
 			},
 		}
+		fmt.Println(films)
 		tmpl.Execute(w, films)
 	}
 
@@ -51,21 +52,13 @@ func main() {
 				{Title: "The Thing", Director: "John Carpenter"},
 			}}
 
-		 s := make(map[string][]Film)
-		emptyFilms := []Film{}
-
 		for _, group := range films {
 			for _, film := range group {
 				if film.Title != title {
-					emptyFilms = append(emptyFilms, film)
+					tmpl.ExecuteTemplate(w, "film-list-element", Film{Title: film.Title, Director: film.Director})
 				}
 			}
 		}
-
-		s["Films"] = emptyFilms
-
-		fmt.Println(s["Films"])
-		tmpl.Execute(w, s)
 
 	}
 
